@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeGoodsPR Agent</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>AnimeGoodsPR Agent</h1>
+    <div class="form-group">
+        <label for="url">公式URL:</label>
+        <input type="text" id="url" placeholder="https://example.com">
+    </div>
+    <div class="form-group">
+        <label for="format">記事フォーマット:</label>
+        <select id="format">
+            <option value="A">フォーマットA</option>
+            <option value="B">フォーマットB</option>
+            <option value="C">フォーマットC</option>
+            <option value="D">フォーマットD</option>
+        </select>
+    </div>
+    <button onclick="generateArticle()">記事を生成</button>
+    <div id="result"></div>
+
+    <script>
+        async function generateArticle() {
+            const url = document.getElementById('url').value;
+            const format = document.getElementById('format').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!url) {
+                alert('URLを入力してください');
+                return;
+            }
+
+            try {
+                const response = await fetch('/generate-article', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        format_pattern: format
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <h3>成功!</h3>
+                        <p>記事ID: ${data.article_id}</p>
+                        <p>${data.message}</p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <h3>エラー</h3>
+                        <p>${data.detail}</p>
+                    `;
+                }
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>エラー</h3>
+                    <p>記事の生成中にエラーが発生しました</p>
+                `;
+                resultDiv.style.display = 'block';
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
