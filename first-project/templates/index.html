@@ -1,83 +1,179 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimeGoodsPR Agent</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
+            font-family: 'Noto Sans JP', 'Meiryo', sans-serif;
+            background: #181a20;
+            color: #fff;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        .aurora {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 220px;
+            background: linear-gradient(120deg, #7f7fd5 0%, #86a8e7 40%, #91eac9 70%, #f093fb 100%);
+            opacity: 0.25;
+            filter: blur(32px);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 48px 24px 24px 24px;
+            background: rgba(24, 26, 32, 0.95);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            margin-top: 80px;
         }
+
         h1 {
-            color: #333;
             text-align: center;
+            font-size: 2.2rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 32px;
+            background: linear-gradient(90deg, #f093fb 0%, #5eead4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 24px;
         }
+
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: bold;
+            color: #e0e0e0;
         }
-        input, select {
+
+        input {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
+            padding: 10px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
+            background: #23263a;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        input:focus {
+            outline: 2px solid #91eac9;
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(90deg, #f093fb 0%, #5eead4 100%);
+            color: #181a20;
+            padding: 12px 0;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
+            transition: background 0.3s;
+            margin-top: 8px;
         }
+
         button:hover {
-            background-color: #45a049;
+            background: linear-gradient(90deg, #5eead4 0%, #f093fb 100%);
         }
+
         #result {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            margin-top: 32px;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(36, 37, 46, 0.95);
+            border: 1px solid #333;
             display: none;
+            color: #fff;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .loader {
+            border: 6px solid #23263a;
+            border-top: 6px solid #91eac9;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin-top: 32px;
+                padding: 16px 4vw;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
-<body>
-    <h1>AnimeGoodsPR Agent</h1>
-    <div class="form-group">
-        <label for="url">公式URL:</label>
-        <input type="text" id="url" placeholder="https://example.com">
-    </div>
-    <div class="form-group">
-        <label for="format">記事フォーマット:</label>
-        <select id="format">
-            <option value="A">フォーマットA</option>
-            <option value="B">フォーマットB</option>
-            <option value="C">フォーマットC</option>
-            <option value="D">フォーマットD</option>
-        </select>
-    </div>
-    <button onclick="generateArticle()">記事を生成</button>
-    <div id="result"></div>
 
+<body>
+    <div class="aurora"></div>
+    <div class="container">
+        <h1>AnimeGoodsPR Agent</h1>
+        <div class="form-group">
+            <label for="url">公式URL</label>
+            <input type="text" id="url" placeholder="https://example.com">
+        </div>
+        <button onclick="generateArticle()">記事を生成</button>
+        <div id="loading" class="loading" style="display:none;">
+            <div class="loader"></div>
+            <div>記事を生成中です…</div>
+        </div>
+        <div id="result"></div>
+    </div>
     <script>
         async function generateArticle() {
             const url = document.getElementById('url').value;
-            const format = document.getElementById('format').value;
             const resultDiv = document.getElementById('result');
+            const loadingDiv = document.getElementById('loading');
 
             if (!url) {
                 alert('URLを入力してください');
                 return;
             }
+
+            resultDiv.style.display = 'none';
+            loadingDiv.style.display = 'flex';
 
             try {
                 const response = await fetch('/generate-article', {
@@ -86,29 +182,29 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        url: url,
-                        format_pattern: format
+                        url: url
                     }),
                 });
 
                 const data = await response.json();
-                
+                loadingDiv.style.display = 'none';
                 if (response.ok) {
                     resultDiv.innerHTML = `
-                        <h3>成功!</h3>
+                        <h3 style="color:#5eead4;">成功!</h3>
                         <p>記事ID: ${data.article_id}</p>
                         <p>${data.message}</p>
                     `;
                 } else {
                     resultDiv.innerHTML = `
-                        <h3>エラー</h3>
+                        <h3 style="color:#f093fb;">エラー</h3>
                         <p>${data.detail}</p>
                     `;
                 }
                 resultDiv.style.display = 'block';
             } catch (error) {
+                loadingDiv.style.display = 'none';
                 resultDiv.innerHTML = `
-                    <h3>エラー</h3>
+                    <h3 style="color:#f093fb;">エラー</h3>
                     <p>記事の生成中にエラーが発生しました</p>
                 `;
                 resultDiv.style.display = 'block';
@@ -117,4 +213,5 @@
         }
     </script>
 </body>
+
 </html>
