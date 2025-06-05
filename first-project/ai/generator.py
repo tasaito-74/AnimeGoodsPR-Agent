@@ -1,10 +1,11 @@
-import openai
 import os
+import requests
 from typing import Dict, List
 
 class ArticleGenerator:
     def __init__(self):
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = os.getenv("DEEPSEEK_API_KEY")
+        self.api_url = "https://api.deepseek.com/v1/chat/completions"
         self.formats = {
             "A": self._format_pattern_a,
             "B": self._format_pattern_b,
@@ -17,16 +18,23 @@ class ArticleGenerator:
         format_func = self.formats.get(format_pattern, self._format_pattern_a)
         prompt = format_func(scraped_data)
         
-        response = await openai.ChatCompletion.acreate(
-            model="gpt-4",
-            messages=[
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        data = {
+            "model": "deepseek-chat",
+            "messages": [
                 {"role": "system", "content": "You are a professional copywriter for anime goods."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.7
-        )
+            "temperature": 0.7
+        }
         
-        return response.choices[0].message.content
+        response = requests.post(self.api_url, json=data, headers=headers)
+        response.raise_for_status()
+        return response.json()["choices"][0]["message"]["content"]
 
     def _format_pattern_a(self, data: Dict[str, List[str]]) -> str:
         """フォーマットパターンA用のプロンプト生成"""

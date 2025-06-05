@@ -4,7 +4,8 @@ from typing import Optional
 
 class WordPressPoster:
     def __init__(self):
-        self.base_url = os.getenv("WORDPRESS_API_URL")
+        base = os.getenv("WORDPRESS_API_URL", "").rstrip("/")
+        self.base_url = base
         self.auth = (
             os.getenv("WORDPRESS_USERNAME"),
             os.getenv("WORDPRESS_PASSWORD")
@@ -24,6 +25,7 @@ class WordPressPoster:
         }
 
         try:
+            print(f"投稿先URL: {self.base_url}/posts")
             response = requests.post(
                 f"{self.base_url}/posts",
                 json=data,

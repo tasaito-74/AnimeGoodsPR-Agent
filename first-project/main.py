@@ -42,10 +42,10 @@ async def generate_article(request: ArticleRequest):
         scraped_data = scrape_content(request.url)
         
         # 2. AIで記事生成
-        article_html = generate_ai_article(scraped_data, request.format_pattern)
+        article_html = await generate_ai_article(scraped_data, request.format_pattern)
         
         # 3. WordPressに投稿
-        post_id = post_to_wordpress(article_html)
+        post_id = await post_to_wordpress(article_html)
         
         return {
             "status": "success",
