@@ -34,35 +34,50 @@ class ArticleGenerator:
         return response.json()["choices"][0]["message"]["content"]
 
     def _format_pattern_a(self, data: Dict[str, List[str]]) -> str:
-        """フォーマットパターンA用のプロンプト生成（全画像・画像サイズ・フォント指定・タイトル強調・価格リスト）"""
         images_html = "\n".join([
             f"<img src='{url}' width='100%' style='max-width:600px; height:auto; display:block; margin:16px auto;'>"
             for url in data['images']
         ])
-        # グッズリストHTML生成（goodsがあれば）
         goods_html = ""
         if 'goods' in data and data['goods']:
             goods_html = "<ul style=\"font-family:'Noto Sans JP', 'Meiryo', sans-serif;\">"
             for item in data['goods']:
-                goods_html += f"<li>{item.get('name', '')}：{item.get('price', '')}</li>"
+                goods_html += (
+                    "<li>"
+                    f"<b>商品名：</b>{item.get('name', '')}　"
+                    f"<b>価格：</b>{item.get('price', '')}　"
+                    f"<b>発売日：</b>{item.get('date', '')}"
+                    "</li>"
+                )
             goods_html += "</ul>"
+        else:
+            goods_html = (
+                "<ul style=\"font-family:'Noto Sans JP', 'Meiryo', sans-serif;\">"
+                "<li><b>商品名：</b>　<b>価格：</b>　<b>発売日：</b></li>"
+                "</ul>"
+            )
         return f"""
-        以下の情報をもとに、アニメグッズのPR記事をHTML形式で作成してください。
-        フォーマット:
-        <h1 style=\"font-family:'Noto Sans JP', 'Meiryo', sans-serif; background:#e91e63; color:#fff; padding:12px; border-radius:8px;\">記事タイトル</h1>
-        <p style=\"font-family:'Noto Sans JP', 'Meiryo', sans-serif;\">リード文（50文字程度）</p>
-        <h2 style=\"font-family:'Noto Sans JP', 'Meiryo', sans-serif;\">見出し1</h2>
-        <p style=\"font-family:'Noto Sans JP', 'Meiryo', sans-serif;\">本文テキスト</p>
-        グッズごとの価格リストを以下のように挿入してください。
-        {goods_html if goods_html else '<ul style="font-family:\'Noto Sans JP\', \'Meiryo\', sans-serif;"> <li>グッズ名：価格</li> ... </ul>'}
-        画像は本文の流れに合わせて適切な位置に、下記のstyle属性付きで挿入してください。
-        <p style=\"font-family:'Noto Sans JP', 'Meiryo', sans-serif;\">まとめ・CTA</p>
+以下の情報をもとに、アニメグッズのPR記事をHTML形式で作成してください。
 
-        スクレイピングデータ:
-        テキスト: {data['text']}
-        画像HTML:
-        {images_html}
-        グッズ情報: {data.get('goods', '（本文中からグッズ名と価格を抽出してリスト化してください）')}
+【重要な指示】
+- 出力はHTML本文のみで、冒頭に'''htmlや\"html\"などの前置きやコードブロック記号は絶対に付けないこと。
+- グッズ名・価格・発売日などは必ずul/liでリスト化し、ラベル部分は<b>太字</b>にすること。
+- スクレイピングデータに存在しない情報（価格・日程など）は絶対に推測せず、空欄または記載しないこと。
+- タイトルや区分ごとにh2/h3や<b>太字</b>、色分け（style属性）で装飾し、本文も適宜<b>太字</b>や色を使って強調すること。
 
-        注意: タイトルはピンク色の塗りつぶし＋白文字で強調し、グッズごとの価格リストをul/liで表示してください。各テキスト要素にはWordPressで推奨される日本語フォント（例: 'Noto Sans JP', 'Meiryo', sans-serif）をstyle属性で指定し、画像はstyle属性でサイズ・中央寄せを指定してください。
-        """
+フォーマット例:
+<h1 style="font-family:'Noto Sans JP', 'Meiryo', sans-serif; background:#e91e63; color:#fff; padding:12px; border-radius:8px;">記事タイトル</h1>
+<p style="font-family:'Noto Sans JP', 'Meiryo', sans-serif;">リード文（50文字程度）</p>
+<h2 style="font-family:'Noto Sans JP', 'Meiryo', sans-serif; color:#5eead4;">商品情報</h2>
+{goods_html}
+<h2 style="font-family:'Noto Sans JP', 'Meiryo', sans-serif; color:#f093fb;">詳細・おすすめポイント</h2>
+<p style="font-family:'Noto Sans JP', 'Meiryo', sans-serif;">本文テキスト。重要な語句やポイントは<b>太字</b>や<span style='color:#f093fb;'>色</span>で強調。</p>
+{images_html}
+<p style="font-family:'Noto Sans JP', 'Meiryo', sans-serif; font-weight:bold;">まとめ・CTA</p>
+
+スクレイピングデータ:
+テキスト: {data['text']}
+画像HTML:
+{images_html}
+グッズ情報: {data.get('goods', '（本文中からグッズ名・価格・発売日を抽出してリスト化してください。無い場合は空欄でOK）')}
+"""

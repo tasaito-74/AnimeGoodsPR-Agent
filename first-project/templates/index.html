@@ -8,101 +8,92 @@
     <style>
         body {
             font-family: 'Noto Sans JP', 'Meiryo', sans-serif;
-            background: #181a20;
-            color: #fff;
+            background: #15161a;
+            color: #f5f5f7;
             min-height: 100vh;
             margin: 0;
             padding: 0;
-            position: relative;
-        }
-
-        .aurora {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 220px;
-            background: linear-gradient(120deg, #7f7fd5 0%, #86a8e7 40%, #91eac9 70%, #f093fb 100%);
-            opacity: 0.25;
-            filter: blur(32px);
-            z-index: 0;
         }
 
         .container {
-            position: relative;
-            z-index: 1;
-            max-width: 500px;
+            max-width: 480px;
             margin: 0 auto;
-            padding: 48px 24px 24px 24px;
-            background: rgba(24, 26, 32, 0.95);
+            padding: 48px 24px 32px 24px;
+            background: rgba(20, 21, 25, 0.98);
             border-radius: 18px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
             margin-top: 80px;
         }
 
         h1 {
             text-align: center;
-            font-size: 2.2rem;
-            letter-spacing: 0.1em;
+            font-size: 2.1rem;
+            letter-spacing: 0.08em;
             margin-bottom: 32px;
-            background: linear-gradient(90deg, #f093fb 0%, #5eead4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #fff;
+            font-weight: 700;
+            border-bottom: 1.5px solid #23242a;
+            padding-bottom: 12px;
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #e0e0e0;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #bdbdc7;
+            letter-spacing: 0.04em;
         }
 
         input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 6px;
-            background: #23263a;
+            border-radius: 7px;
+            background: #23242a;
             color: #fff;
             font-size: 1rem;
             margin-bottom: 8px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.10);
         }
 
         input:focus {
-            outline: 2px solid #91eac9;
+            outline: 2px solid #444;
+            background: #23242a;
         }
 
         button {
             width: 100%;
-            background: linear-gradient(90deg, #f093fb 0%, #5eead4 100%);
-            color: #181a20;
-            padding: 12px 0;
+            background: linear-gradient(90deg, #23242a 0%, #35363c 100%);
+            color: #fff;
+            padding: 13px 0;
             border: none;
-            border-radius: 6px;
+            border-radius: 7px;
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, color 0.3s;
             margin-top: 8px;
+            letter-spacing: 0.04em;
         }
 
         button:hover {
-            background: linear-gradient(90deg, #5eead4 0%, #f093fb 100%);
+            background: linear-gradient(90deg, #35363c 0%, #23242a 100%);
+            color: #e91e63;
         }
 
         #result {
-            margin-top: 32px;
-            padding: 20px;
-            border-radius: 10px;
-            background: rgba(36, 37, 46, 0.95);
-            border: 1px solid #333;
+            margin-top: 36px;
+            padding: 22px;
+            border-radius: 12px;
+            background: #18191e;
+            border: 1px solid #23242a;
             display: none;
             color: #fff;
+            font-size: 1.05rem;
         }
 
         .loading {
@@ -110,17 +101,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 32px;
+            margin-top: 36px;
         }
 
         .loader {
-            border: 6px solid #23263a;
-            border-top: 6px solid #91eac9;
+            border: 6px solid #23242a;
+            border-top: 6px solid #e91e63;
             border-radius: 50%;
             width: 48px;
             height: 48px;
             animation: spin 1s linear infinite;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         @keyframes spin {
@@ -140,14 +131,13 @@
             }
 
             h1 {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="aurora"></div>
     <div class="container">
         <h1>AnimeGoodsPR Agent</h1>
         <div class="form-group">
@@ -190,13 +180,13 @@
                 loadingDiv.style.display = 'none';
                 if (response.ok) {
                     resultDiv.innerHTML = `
-                        <h3 style="color:#5eead4;">成功!</h3>
+                        <h3 style="color:#e91e63;">成功!</h3>
                         <p>記事ID: ${data.article_id}</p>
                         <p>${data.message}</p>
                     `;
                 } else {
                     resultDiv.innerHTML = `
-                        <h3 style="color:#f093fb;">エラー</h3>
+                        <h3 style="color:#e91e63;">エラー</h3>
                         <p>${data.detail}</p>
                     `;
                 }
@@ -204,7 +194,7 @@
             } catch (error) {
                 loadingDiv.style.display = 'none';
                 resultDiv.innerHTML = `
-                    <h3 style="color:#f093fb;">エラー</h3>
+                    <h3 style="color:#e91e63;">エラー</h3>
                     <p>記事の生成中にエラーが発生しました</p>
                 `;
                 resultDiv.style.display = 'block';
