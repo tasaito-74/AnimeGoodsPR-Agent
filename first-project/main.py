@@ -25,6 +25,9 @@ app = FastAPI(title="AnimeGoodsPR_Agent")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# 画像保存用ディレクトリの作成
+os.makedirs("static/images", exist_ok=True)
+
 article_generator = ArticleGenerator()
 wordpress_poster = WordPressPoster()
 
