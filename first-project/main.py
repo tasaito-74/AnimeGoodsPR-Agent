@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
-from scraping.scraper import scrape_content
+from scraping.scraper import Scraper
 from ai.generator import ArticleGenerator
 from wordpress.poster import WordPressPoster
 import logging
@@ -14,7 +14,7 @@ load_dotenv()
 
 # ログ設定
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -28,6 +28,7 @@ templates = Jinja2Templates(directory="templates")
 # 画像保存用ディレクトリの作成
 os.makedirs("static/images", exist_ok=True)
 
+scraper = Scraper()
 article_generator = ArticleGenerator()
 wordpress_poster = WordPressPoster()
 
@@ -41,13 +42,10 @@ async def generate_article(request: ArticleRequest):
     公式URLから記事を生成しWordPressに投稿する
     """
     try:
-        # 1. URLからコンテンツをスクレイピング
-        scraped_data = scrape_content(request.url)
+        # 1. 記事生成（スクレイピングも含む）
+        article_html = article_generator.generate_article(request.url)
         
-        # 2. AIで記事生成
-        article_html = await generate_ai_article(scraped_data, request.format_pattern)
-        
-        # 3. WordPressに投稿
+        # 2. WordPressに投稿
         post_id = await post_to_wordpress(article_html)
         
         return {
@@ -71,7 +69,10 @@ def scrape_content(url: str) -> dict:
     try:
         logger.info(f"Scraping content from: {url}")
         from scraping.scraper import scrape_content as _scrape_content
-        return _scrape_content(url)
+        scraped_data = _scrape_content(url)
+        # 元のURLをsource_urlとして追加
+        scraped_data['source_url'] = url
+        return scraped_data
     except Exception as e:
         logger.error(f"Scraping failed: {e}")
         raise HTTPException(
@@ -83,7 +84,7 @@ async def generate_ai_article(scraped_data: dict, format_pattern: str) -> str:
     """AIを使用して記事を生成"""
     try:
         logger.info("Generating article with AI")
-        return await article_generator.generate_article(scraped_data, format_pattern)
+        return article_generator.generate_article(scraped_data.get('source_url', ''))
     except Exception as e:
         logger.error(f"AI generation failed: {e}")
         raise HTTPException(
