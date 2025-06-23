@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アニメ記事生成支援サービス</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">アニメ記事生成支援サービス</h1>
+            <p class="subtitle">URLを入力するだけで、AIが自動で記事を生成しGoogle Docsに保存します</p>
+        </header>
+
+        <main class="main">
+            <form id="articleForm" class="form">
+                <div class="form-group">
+                    <label for="url" class="label">公式URL</label>
+                    <input type="url" id="url" name="url" class="input"
+                        placeholder="https://example.com/anime-popup-store" required>
+                    <small class="help-text">公式Xポスト、公式WebサイトなどのURLを入力してください</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">フォーマット選択</label>
+                    <div class="format-toggles">
+                        <label class="toggle">
+                            <input type="radio" name="format_type" value="popup" checked>
+                            <span class="toggle-label">ポップアップストア</span>
+                        </label>
+                        <!-- 将来的に他のフォーマットを追加 -->
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">記事を生成</span>
+                    <span class="btn-loading" style="display: none;">
+                        <div class="spinner"></div>
+                        生成中...
+                    </span>
+                </button>
+            </form>
+
+            <div id="result" class="result" style="display: none;">
+                <div class="result-header">
+                    <h3>生成完了</h3>
+                </div>
+                <div class="result-content">
+                    <p id="resultMessage"></p>
+                    <a id="docsLink" href="#" target="_blank" class="docs-link">
+                        Google Docsで開く
+                    </a>
+                </div>
+            </div>
+
+            <div id="error" class="error" style="display: none;">
+                <div class="error-header">
+                    <h3>エラーが発生しました</h3>
+                </div>
+                <div class="error-content">
+                    <p id="errorMessage"></p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 アニメ記事生成支援サービス</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', path='/js/script.js') }}"></script>
+</body>
+
+</html>

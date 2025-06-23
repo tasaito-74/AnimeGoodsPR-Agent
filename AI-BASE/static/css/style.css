@@ -1,0 +1,296 @@
+/* リセットとベーススタイル */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #FF5DAB 0%, #FF8EC7 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ヘッダー */
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    color: white;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* メインコンテンツ */
+.main {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* フォーム */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.label {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.input {
+    padding: 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #FF5DAB;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255, 93, 171, 0.1);
+}
+
+.help-text {
+    color: #666;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* トグルボタン */
+.category-toggles,
+.format-toggles {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.toggle {
+    position: relative;
+    cursor: pointer;
+}
+
+.toggle input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.toggle-label {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border: 2px solid #e1e5e9;
+    border-radius: 25px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.toggle input[type="radio"]:checked+.toggle-label {
+    background: #FF5DAB;
+    border-color: #FF5DAB;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 93, 171, 0.3);
+}
+
+.toggle input[type="radio"]:hover+.toggle-label {
+    border-color: #FF5DAB;
+    transform: translateY(-1px);
+}
+
+/* 送信ボタン */
+.submit-btn {
+    background: linear-gradient(135deg, #FF5DAB 0%, #FF8EC7 100%);
+    color: white;
+    border: none;
+    padding: 18px 30px;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(255, 93, 171, 0.3);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ローディングスピナー */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* 結果表示 */
+.result,
+.error {
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 15px;
+    border-left: 5px solid;
+}
+
+.result {
+    background: #fef7f3;
+    border-left-color: #FF5DAB;
+}
+
+.error {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+}
+
+.result-header,
+.error-header {
+    margin-bottom: 15px;
+}
+
+.result-header h3 {
+    color: #FF5DAB;
+    font-size: 1.3rem;
+}
+
+.error-header h3 {
+    color: #dc2626;
+    font-size: 1.3rem;
+}
+
+.result-content,
+.error-content {
+    color: #374151;
+}
+
+.docs-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 24px;
+    background: #FF5DAB;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.docs-link:hover {
+    background: #FF3D95;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(255, 93, 171, 0.3);
+}
+
+/* フッター */
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .main {
+        padding: 25px;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .category-toggles,
+    .format-toggles {
+        flex-direction: column;
+    }
+
+    .toggle-label {
+        text-align: center;
+        width: 100%;
+    }
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result,
+.error {
+    animation: fadeIn 0.5s ease-out;
+}
